@@ -20,7 +20,7 @@ export default defineComponent({
     name: "searchView",
     data() {
         return {
-            id: "squirtle",
+            id: "",
             name: "",
             src: "",
         };
@@ -37,8 +37,6 @@ export default defineComponent({
                 });
         },
     },
-    mounted() {
-        this.getPokemon("squirtle");
-    },
+    mounted() {},
 });
 </script>
