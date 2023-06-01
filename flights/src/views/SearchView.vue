@@ -59,33 +59,39 @@ export default defineComponent({
             };
             this.similarPokemons = [];
         },
-        getPokemon(id: String) {
+        async getPokemon(id: String) {
             const url = `https://pokeapi.co/api/v2/pokemon/${id}`;
-            fetch(url)
+
+            this.pokemon = await fetch(url)
                 .then((res) => res.json())
                 .then((res) => {
-                    this.pokemon.name = res.name;
-                    this.pokemon.src = res.sprites.front_default;
+                    const pokemon = {
+                        name: res.name,
+                        src: res.sprites.front_default,
+                        types: [],
+                        weight: res.weight,
+                        height: res.height,
+                        firstType: "",
+                        exists: true,
+                    };
 
-                    this.pokemon.types = res.types.map((type: any) => {
-                        this.pokemon.firstType +=
-                            this.pokemon.firstType === "" ? type.type.name : ""; //tuti można jakoś lepiej
+                    pokemon.types = res.types.map((type: any) => {
+                        pokemon.firstType +=
+                            pokemon.firstType === "" ? type.type.name : ""; //tuti można jakoś lepiej
                         return type.type.name;
                     });
-                    this.pokemon.weight = res.weight;
-                    this.pokemon.height = res.height;
-                    this.pokemon.exists = true;
                     this.id = "";
-                    this.getPokemonsFromType(this.pokemon.firstType);
+                    this.getPokemonsFromType(pokemon.firstType);
+                    return pokemon;
                 })
                 .catch((err) => {
                     console.log(err);
                     return err;
                 });
         },
-        getPokemonsFromType(type: String): any {
+        async getPokemonsFromType(type: String) {
             const url = `https://pokeapi.co/api/v2/type/${type}`;
-            fetch(url)
+            this.similarPokemons = await fetch(url)
                 .then((res) => res.json())
                 .then((res) => {
                     res = res.pokemon;
@@ -99,7 +105,7 @@ export default defineComponent({
                         res.length / 10,
                         res.slice(0 + ran * 10, 10 + ran * 10)
                     );
-                    this.similarPokemons = res.slice(min, min + 10);
+                    return res.slice(min, min + 10);
                 });
         },
         emitedSearch(id: String) {
