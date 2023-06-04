@@ -85,8 +85,8 @@ export default defineComponent({
                     return pokemon;
                 })
                 .catch((err) => {
-                    console.log(err);
-                    return err;
+                    alert(`Pokemon ${this.id} not found`);
+                    return this.pokemon;
                 });
         },
         async getPokemonsFromType(type: String) {
